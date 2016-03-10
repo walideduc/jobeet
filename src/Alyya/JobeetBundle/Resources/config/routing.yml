@@ -1,0 +1,7 @@
+alyya_jobeet_alyya_job:
+    resource: "@AlyyaJobeetBundle/Resources/config/routing/job.yml"
+    prefix:   /job
+
+alyya_jobeet_homepage:
+    path:     /
+    defaults: { _controller: AlyyaJobeetBundle:Job:index }

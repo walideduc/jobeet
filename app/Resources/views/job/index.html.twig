@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/alyyajobeet/css/jobs.css')}}" type="text/css" media="all" />
+{% endblock %}
+
+{% block body %}
+    <div id="jobs">
+        <table class="jobs">
+            {% for job in jobs %}
+                <tr class="{{ cycle(['even','odd'],loop.index) }}">
+                    <td class="location">{{ job.location }}</td>
+                    <td class="position">
+                        <a href="{{ path('alyya_job_show',{'company':job.companySlug,'location':job.locationSlug,'position':job.positionSlug,'id':job.id}) }}"></a>
+                        {{ job.position }}
+                    </td>
+                    <td class="company">{{ job.company }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

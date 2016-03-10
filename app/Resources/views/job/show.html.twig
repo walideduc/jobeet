@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/alyyajobeet/css/job.css') }}" type="text/css" media="all" />
+{% endblock %}
+{% block body %}
+   <div id="job">
+       <h1>{{ job.company }}</h1>
+       <h2>{{ job.company }}</h2>
+       <h3>
+           {{ job.position }}
+            <small>-{{ job.type }}</small>
+       </h3>
+       {% if job.logo %}
+           <div class="log">
+               <a href="{{ job.url }}">
+                   <img src="{uploads/jobs/{{ job.logo }}" alt="{{ job.company }} logo "/>
+               </a>
+           </div>
+       {% endif %}
+       <div class="description">
+           {{ job.description | nl2br }}
+       </div>
+       <h4>How to apply ?</h4>
+       <div class="meta">
+           <small>posted on{{ job.createdat|date('m/d/Y') }}</small>
+       </div>
+       <div style="padding: 20px 0">
+           <a href="{{ path('alyya_job_edit',{'id':job.id}) }}">
+               Edit
+           </a>
+       </div>
+
+   </div>
+{% endblock %}

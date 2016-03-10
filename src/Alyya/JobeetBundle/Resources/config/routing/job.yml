@@ -1,0 +1,26 @@
+alyya_job_index:
+    path:     /
+    defaults: { _controller: "AlyyaJobeetBundle:Job:index" }
+    methods:  GET
+
+alyya_job_show:
+    path:     /{company}/{location}/{id}/{position}
+    defaults: { _controller: "AlyyaJobeetBundle:Job:show" }
+    methods:  GET
+    requirements:
+      id: \d+
+
+alyya_job_new:
+    path:     /new
+    defaults: { _controller: "AlyyaJobeetBundle:Job:new" }
+    methods:  [GET, POST]
+
+alyya_job_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "AlyyaJobeetBundle:Job:edit" }
+    methods:  [GET, POST]
+
+alyya_job_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AlyyaJobeetBundle:Job:delete" }
+    methods:  DELETE

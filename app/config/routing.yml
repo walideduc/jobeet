@@ -1,0 +1,4 @@
+alyya_jobeet:
+    resource: "@AlyyaJobeetBundle/Resources/config/routing.yml"
+    prefix:   /
+
