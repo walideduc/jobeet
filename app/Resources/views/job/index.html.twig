@@ -6,8 +6,17 @@
 
 {% block body %}
     <div id="jobs">
-        <table class="jobs">
-            {% for job in jobs %}
+        {% for category in categories %}
+            <div>
+                <div class="category">
+                    <div class="feed">
+                        <a href="">Feed</a>
+                    </div>
+                    <h1>{{ category.name }}</h1>
+                </div>
+            </div>
+            <table class="jobs">
+            {% for job in category.activejobs %}
                 <tr class="{{ cycle(['even','odd'],loop.index) }}">
                     <td class="location">{{ job.location }}</td>
                     <td class="position">
@@ -18,5 +27,6 @@
                 </tr>
             {% endfor %}
         </table>
+        {% endfor %}
     </div>
 {% endblock %}

@@ -21,11 +21,14 @@ class JobController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
-        $jobs = $em->getRepository('AlyyaJobeetBundle:Job')->findAll();
-
+        // categories with at least on active job;
+        $categories = $em->getRepository('AlyyaJobeetBundle:Category')->getWithJobs();
+        //var_dump($categories);
+        foreach ($categories as $category ){
+            $category->setActiveJobs($em->getRepository('AlyyaJobeetBundle:Job')->getActiveJobs($category->getId(),$this->container->getParameter('max_job_on_homepage')));
+        }
         return $this->render('job/index.html.twig', array(
-            'jobs' => $jobs,
+            'categories' => $categories,
         ));
     }
 
