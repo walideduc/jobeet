@@ -1,0 +1,23 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}
+    {{ category.name  }} jobs
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/alyyajobeet/css/jobs.css') }}"  type="text/css" media="all" />
+{% endblock %}
+{% block body %}
+    <div class="category">
+        <div class="feed">
+            <a href="">Feed</a>
+        </div>
+        <h1>{{ category.name }}</h1>
+    </div>
+    {{ include ('job/list.html.twig', {'jobs': category.activejobs}) }}
+    <div class="pagination_desc">
+        <strong>{{ category.activejobs.getTotalItemCount }}</strong> jobs in this category
+        {{ knp_pagination_render(category.activejobs) }}
+    </div>
+{% endblock %}

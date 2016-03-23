@@ -23,9 +23,9 @@ class JobController extends Controller
         $em = $this->getDoctrine()->getManager();
         // categories with at least on active job;
         $categories = $em->getRepository('AlyyaJobeetBundle:Category')->getWithJobs();
-        //var_dump($categories);
         foreach ($categories as $category ){
             $category->setActiveJobs($em->getRepository('AlyyaJobeetBundle:Job')->getActiveJobs($category->getId(),$this->container->getParameter('max_job_on_homepage')));
+            $category->setMoreJobs($em->getRepository('AlyyaJobeetBundle:Job')->countActiveJobs($category->getId()) - $this->container->getParameter('max_job_on_homepage'));
         }
         return $this->render('job/index.html.twig', array(
             'categories' => $categories,
@@ -62,6 +62,10 @@ class JobController extends Controller
      */
     public function showAction(Job $job)
     {
+        //return $this->getDoctrine()->getEntityManager()->getRepository('AlyyaJobeetBundle:Job')->getActiveJob($job->getId());
+        if($job->getExpiresAt()->format('Y-m-d H:i:s') < date('Y-m-d H:i:s',time())){
+            throw $this->createNotFoundException('This job is expired and does not exist any more');
+        }
         $deleteForm = $this->createDeleteForm($job);
 
         return $this->render('job/show.html.twig', array(

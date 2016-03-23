@@ -12,21 +12,15 @@
                     <div class="feed">
                         <a href="">Feed</a>
                     </div>
-                    <h1>{{ category.name }}</h1>
+                    <h1><a href="{{ path('alyya_category_show',{'slug':category.slug}) }}">{{ category.name }}</a></h1>
                 </div>
             </div>
-            <table class="jobs">
-            {% for job in category.activejobs %}
-                <tr class="{{ cycle(['even','odd'],loop.index) }}">
-                    <td class="location">{{ job.location }}</td>
-                    <td class="position">
-                        <a href="{{ path('alyya_job_show',{'company':job.companySlug,'location':job.locationSlug,'position':job.positionSlug,'id':job.id}) }}"></a>
-                        {{ job.position }}
-                    </td>
-                    <td class="company">{{ job.company }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+            {{ include ('job/list.html.twig', {'jobs': category.activejobs}) }}
+            {% if category.morejobs %}
+                <div class="more_jobs">
+                    and <a href="{{ path('alyya_category_show',{'slug':category.slug}) }}"> {{  category.morejobs }} </a> more ...
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

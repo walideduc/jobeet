@@ -13,6 +13,11 @@ use Doctrine\ORM\EntityRepository;
 class JobRepository extends EntityRepository
 {
     public function getActiveJobs($category_id = null,$max = null){
+        $query = $this->getActiveJobsQuery($category_id,$max);
+        return $query->getResult();
+    }
+
+    public function getActiveJobsQuery($category_id = null,$max = null){
         $queryBuilder = $this->createQueryBuilder('j')
             ->where('j.expires_at >:date')
             ->setParameter('date',date('Y-m-d',time()))
@@ -24,8 +29,35 @@ class JobRepository extends EntityRepository
         if($max){
             $queryBuilder->setMaxResults($max);
         }
-        $query = $queryBuilder->getQuery();
-        return $query->getResult();
+         return $queryBuilder->getQuery();
+    }
 
+    public function getActiveJob($id){
+        $query = $this->createQueryBuilder('j')
+                ->where('j.id = :id')
+                ->setParameter('id',$id)
+                ->andWhere('j.expires_at > :date')
+                ->setParameter('date',date('Y-m-d H:i:s',time()))
+                ->setMaxResults(1)
+            ->getQuery();
+        try {
+            $job = $query->getSingleResult();
+        } catch (\Doctrine\Orm\NoResultException $e) {
+            $job = null;
+        }
+
+        return $job;
+    }
+
+    public function countActiveJobs($category_id = null ){
+        $queryBuilder = $this->createQueryBuilder('j')
+            ->select('count(j.id)')
+            ->where('j.expires_at > :date')
+            ->setParameter('date',date('Y-m-d H:i:s',time()));
+        if($category_id){
+            $queryBuilder->andWhere('j.category = :category_id')
+                ->setParameter(':category_id',$category_id);
+        }
+        return $queryBuilder->getQuery()->getSingleScalarResult();
     }
 }

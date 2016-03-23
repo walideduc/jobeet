@@ -2,6 +2,7 @@
 
 namespace Alyya\JobeetBundle\Entity;
 
+use Alyya\JobeetBundle\Utils\Jobeet;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,10 @@ class Category
     private $affiliates;
 
     private $active_jobs;
+
+    private $more_jobs ;
+
+
 
     /**
      * Constructor
@@ -151,4 +156,48 @@ class Category
         return $this->active_jobs ;
     }
 
+    public function setMoreJobs($jobs){
+        $this->more_jobs = $jobs > 0 ? $jobs : 0 ;
+    }
+
+    public function getMoreJobs(){
+        return $this->more_jobs ;
+    }
+
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setSlugValue()
+    {
+        $this->setSlug(Jobeet::suglify($this->getName()));
+    }
+    /**
+     * @var string
+     */
+    private $slug;
+
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Category
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 }
