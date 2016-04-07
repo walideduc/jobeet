@@ -21,6 +21,11 @@ class Category
     private $name;
 
     /**
+     * @var string
+     */
+    private $slug;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $jobs;
@@ -48,7 +53,7 @@ class Category
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -71,11 +76,35 @@ class Category
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Category
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     /**
@@ -104,7 +133,7 @@ class Category
     /**
      * Get jobs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getJobs()
     {
@@ -137,7 +166,7 @@ class Category
     /**
      * Get affiliates
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getAffiliates()
     {
@@ -170,34 +199,7 @@ class Category
      */
     public function setSlugValue()
     {
-        $this->setSlug(Jobeet::suglify($this->getName()));
-    }
-    /**
-     * @var string
-     */
-    private $slug;
-
-
-    /**
-     * Set slug
-     *
-     * @param string $slug
-     * @return Category
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-
-        return $this;
+        $this->setSlug(Jobeet::slugify($this->getName()));
     }
 
-    /**
-     * Get slug
-     *
-     * @return string 
-     */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
 }

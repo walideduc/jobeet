@@ -493,13 +493,13 @@ class Job
     }
 
     public function getCompanySlug(){
-        return Jobeet::suglify($this->getCompany());
+        return Jobeet::slugify($this->getCompany());
     }
     public function getPositionSlug(){
-        return Jobeet::suglify($this->getPosition());
+        return Jobeet::slugify($this->getPosition());
     }
     public function getLocationSlug(){
-        return Jobeet::suglify($this->getPosition());
+        return Jobeet::slugify($this->getPosition());
     }
 
     /**
