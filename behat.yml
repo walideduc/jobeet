@@ -1,0 +1,11 @@
+default:
+  extensions:
+        Behat\Symfony2Extension: ~
+  suites:
+          jobeet:
+              type: symfony_bundle
+              bundle: AlyyaJobeetBundle
+              paths:
+                     - %paths.base%/src/Alyya/JobeetBundle/Tests/BDD/Behat/Features
+              contexts:
+                    - Alyya\JobeetBundle\Tests\BDD\Behat\Context\FeatureContext:

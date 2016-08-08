@@ -1,0 +1,7 @@
+AlyyaJobeetBundle\Entity\Job:
+  properties:
+    email:
+      - NotBlank: ~
+      - Email: ~
+    url:
+     - NotBlank: ~

@@ -16,6 +16,7 @@ class JobType extends AbstractType
     {
         $builder
             ->add('type')
+            ->add('category')
             ->add('company')
             ->add('logo')
             ->add('url')
@@ -27,10 +28,10 @@ class JobType extends AbstractType
             ->add('is_public')
             ->add('is_activated')
             ->add('email')
-            ->add('expires_at', 'datetime')
+            /*->add('expires_at', 'datetime')
             ->add('created_at', 'datetime')
-            ->add('updated_at', 'datetime')
-            ->add('category')
+            ->add('updated_at', 'datetime')*/
+
         ;
     }
     
