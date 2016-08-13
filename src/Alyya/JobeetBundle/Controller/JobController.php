@@ -110,7 +110,7 @@ class JobController extends Controller
 
         if($publishForm->isSubmitted() && $publishForm->isValid()){
             $job->publish();
-            dump($job);
+            //dump($job);
             $em->persist($job);
             $em->flush();
             $this->addFlash('notice', 'This job is now published for 30 days');
