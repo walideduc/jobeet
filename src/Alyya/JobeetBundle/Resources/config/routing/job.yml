@@ -9,6 +9,25 @@ alyya_job_show:
     methods:  GET
     requirements:
       id: \d+
+alyya_job_preview:
+    path:     /{company}/{location}/{token}/{position}
+    defaults: { _controller: "AlyyaJobeetBundle:Job:preview" }
+    methods:  GET
+    requirements:
+        token: \w+
+
+alyya_job_publish:
+  path: /{token}/publish
+  defaults: {_controller: "AlyyaJobeetBundle:Job:publish"}
+  methods: POST
+  requirements:
+    token: \w+
+
+alyya_job_extend:
+    path: /{token}/extend
+    defaults: {_controller: "AlyyaJobeetBundle:Job:extend"}
+    requirements:
+      token: \w+
 
 alyya_job_new:
     path:     /new
@@ -16,11 +35,11 @@ alyya_job_new:
     methods:  [GET, POST]
 
 alyya_job_edit:
-    path:     /{id}/edit
+    path:     /{token}/edit
     defaults: { _controller: "AlyyaJobeetBundle:Job:edit" }
     methods:  [GET, POST]
 
 alyya_job_delete:
-    path:     /{id}/delete
+    path:     /{token}/delete
     defaults: { _controller: "AlyyaJobeetBundle:Job:delete" }
     methods:  DELETE

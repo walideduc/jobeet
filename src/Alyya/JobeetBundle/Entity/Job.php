@@ -3,6 +3,7 @@
 namespace Alyya\JobeetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Alyya\JobeetBundle\Utils\Jobeet;
 
@@ -96,6 +97,8 @@ class Job
      */
     private $category;
 
+    public $file ;
+
 
     /**
      * Get id
@@ -152,6 +155,17 @@ class Job
     {
         return $this->company;
     }
+
+
+
+/*    public function setFile(File $file){
+        $this->file = $file ;
+        return $this ;
+    }
+
+    public function getFile(){
+        return $this->file;
+    }*/
 
     /**
      * Set logo
@@ -509,5 +523,102 @@ class Job
     {
         $now = $this->getCreatedAt() ? $this->getCreatedAt()->format('U') : time();
         $this->expires_at = new \DateTime(date('Y-m-d H:i:s', $now + 86400 * 30));
+    }
+
+    static public function getTypes(){
+        return array('full-time' => 'Full time', 'part-time' => 'Part time', 'freelance' => 'Freelance');
+    }
+
+    /** This function is used for supplying the Choices with a Callback Function in the validation.yml
+     * @return array
+     */
+    static public function getTypesValue(){
+        return array_keys(self::getTypes());
+    }
+
+    public function getUploadDir(){
+        return 'uploads/jobs';
+    }
+
+    public function getUploadRootDir(){
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+    public function getWebPath(){
+        return $this->logo === null ? null : $this->getUploadDir().'/'.$this->logo;
+    }
+
+    public function getAbsolutePath(){
+        return $this->logo === null ? null : $this->getUploadRootDir().'/'.$this->logo;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function preUpload()
+    {
+        if ($this->file !== null){
+            $this->logo = uniqid().'.'.$this->file->guessExtension();
+        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function upload()
+    {
+        if ($this->file === null){
+            return ;
+        }
+        // If there is an error when moving the file, an exception will
+        // be automatically thrown by move(). This will properly prevent
+        // the entity from being persisted to the database on error
+        $this->file->move($this->getUploadRootDir(),$this->logo);
+        unset($this->file);
+    }
+
+    /**
+     * @ORM\PostRemove
+     */
+    public function removeUpload()
+    {
+        $file = $this->getAbsolutePath();
+        if (file_exists($file)){
+            unlink($file);
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTokenValue()
+    {
+        if(!$this->getToken()) {
+            $this->token = sha1($this->getEmail().rand(11111, 99999));
+        }
+    }
+
+    public function expiresSoon(){
+        return  $this->getDaysBeforeExpires() < 5 ;
+    }
+
+
+    public function isExpired(){
+        return $this->getDaysBeforeExpires() < 0 ;
+    }
+
+    public function getDaysBeforeExpires(){
+        return ceil(( $this->getExpiresAt()->format('U') - time() ) / 86400 );
+    }
+
+    public function publish(){
+        $this->setIsActivated(1);
+    }
+
+    public function extend(){
+        if($this->expiresSoon()){
+           $this->setExpiresAt(new \DateTime(date('Y-m-d H:i:s',time() + 86400 * 30)));
+            return true;
+        }
+        return false;
     }
 }
