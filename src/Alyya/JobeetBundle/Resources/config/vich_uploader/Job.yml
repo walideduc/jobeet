@@ -1,0 +1,4 @@
+Alyya\JobeetBundle\Entity\Job:
+  file:
+    mapping: job_logo
+    filename_property: logo

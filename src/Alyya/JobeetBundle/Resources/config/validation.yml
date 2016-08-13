@@ -1,7 +1,26 @@
-AlyyaJobeetBundle\Entity\Job:
+Alyya\JobeetBundle\Entity\Job:
   properties:
+    type:
+      - NotBlank: ~
+      - Choice: { callback: getTypesValue }
     email:
       - NotBlank: ~
-      - Email: ~
+      - Email:
+          message: The email "{{ value }}" is not a valid email.
+    company:
+      - NotBlank: ~
+    position:
+      - NotBlank: ~
+    location:
+      - NotBlank: ~
+    description:
+      - NotBlank: ~
+    how_to_apply:
+      - NotBlank: ~
     url:
-     - NotBlank: ~
+      - Url: ~
+    file:
+      - Image: ~
+    category:
+      - NotBlank: ~
+

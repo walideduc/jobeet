@@ -47,7 +47,7 @@ class JobController extends Controller
             $em->persist($job);
             $em->flush();
 
-            return $this->redirectToRoute('alyya_job_show', array('id' => $job->getId() , 'company' => $job->getCompanySlug(),'location' => $job->getLocationSlug(),'position' => $job->getPositionSlug() ));
+            return $this->redirectToRoute('alyya_job_preview', array('token' => $job->getToken() , 'company' => $job->getCompanySlug(),'location' => $job->getLocationSlug(),'position' => $job->getPositionSlug() ));
         }
 
         return $this->render('job/new.html.twig', array(
@@ -63,7 +63,8 @@ class JobController extends Controller
     public function showAction(Job $job)
     {
         //return $this->getDoctrine()->getEntityManager()->getRepository('AlyyaJobeetBundle:Job')->getActiveJob($job->getId());
-        if($job->getExpiresAt()->format('Y-m-d H:i:s') < date('Y-m-d H:i:s',time())){
+        //dump($job);dump($job->isExpired());die();
+        if($job->isExpired()){
             throw $this->createNotFoundException('This job is expired and does not exist any more');
         }
         $deleteForm = $this->createDeleteForm($job);
@@ -72,6 +73,84 @@ class JobController extends Controller
             'job' => $job,
             'delete_form' => $deleteForm->createView(),
         ));
+    }
+
+    /**
+     * Finds and displays a Job entity.
+     *
+     */
+    public function previewAction($token)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $job = $em->getRepository('AlyyaJobeetBundle:Job')->findOneByToken($token);
+        //dump($job);
+        if (!$job){
+            throw $this->createNotFoundException('This page does not exist ');
+        }
+        $deleteForm = $this->createDeleteForm($job);
+        $publishForm = $this->createPublishForm($job);
+        $extendForm = $this->createExtendForm($job);
+
+        return $this->render('job/show.html.twig',
+            array('job' => $job ,
+                'delete_form' => $deleteForm->createView() ,
+                'publish_form' => $publishForm->createView(),
+                'extend_form' => $extendForm->createView()
+            ));
+    }
+
+    public function publishAction (Request $request ,$token){
+         $em = $this->getDoctrine()->getManager();
+         $job =   $em->getRepository("AlyyaJobeetBundle:Job")->findOneByToken($token);
+        if(!$job){
+            throw $this->createNotFoundException();
+        }
+        $publishForm = $this->createPublishForm($job);
+        $publishForm->handleRequest($request);
+
+        if($publishForm->isSubmitted() && $publishForm->isValid()){
+            $job->publish();
+            dump($job);
+            $em->persist($job);
+            $em->flush();
+            $this->addFlash('notice', 'This job is now published for 30 days');
+
+        }
+        return $this->redirectToRoute('alyya_job_preview',
+            array(
+                'token' => $job->getToken() ,
+                'company' => $job->getCompanySlug(),
+                'location' => $job->getLocationSlug(),
+                'position' => $job->getPositionSlug()
+            ));
+    }
+
+    public function extendAction(Request $request , $token){
+        $em = $this->getDoctrine()->getManager();
+        $job =   $em->getRepository("AlyyaJobeetBundle:Job")->findOneByToken($token);
+        if(!$job){
+            throw $this->createNotFoundException();
+        }
+        $extendForm = $this->createPublishForm($job);
+        $extendForm->handleRequest($request);
+
+        if($extendForm->isSubmitted() && $extendForm->isValid()){
+
+            if(!$job->extend()){
+                $this->addFlash('notice', 'This job is could not extended yet , you can do it 5 days before the expired day');
+            }
+            $em->persist($job);
+            $em->flush();
+            $this->addFlash('notice', sprintf('This job is now published for until %s',$job->getExpiresAt()->format('Y-m-d')));
+
+        }
+        return $this->redirectToRoute('alyya_job_preview',
+            array(
+                'token' => $job->getToken() ,
+                'company' => $job->getCompanySlug(),
+                'location' => $job->getLocationSlug(),
+                'position' => $job->getPositionSlug()
+            ));
     }
 
     /**
@@ -89,7 +168,7 @@ class JobController extends Controller
             $em->persist($job);
             $em->flush();
 
-            return $this->redirectToRoute('alyya_job_edit', array('id' => $job->getId()));
+            return $this->redirectToRoute('alyya_job_preview', array('token' => $job->getToken()));
         }
 
         return $this->render('job/edit.html.twig', array(
@@ -127,8 +206,26 @@ class JobController extends Controller
     private function createDeleteForm(Job $job)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('alyya_job_delete', array('id' => $job->getId())))
+            ->setAction($this->generateUrl('alyya_job_delete', array('token' => $job->getToken())))
             ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
+    private function createPublishForm(Job $job)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('alyya_job_publish', array('token' => $job->getToken())))
+            ->setMethod('POST')
+            ->getForm()
+        ;
+    }
+
+    private function createExtendForm(Job $job)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('alyya_job_extend', array('token' => $job->getToken())))
+            ->setMethod('POST')
             ->getForm()
         ;
     }
