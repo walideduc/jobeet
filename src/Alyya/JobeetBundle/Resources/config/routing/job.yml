@@ -42,4 +42,4 @@ alyya_job_edit:
 alyya_job_delete:
     path:     /{token}/delete
     defaults: { _controller: "AlyyaJobeetBundle:Job:delete" }
-    methods:  DELETE
+    methods:  [POST,DELETE]

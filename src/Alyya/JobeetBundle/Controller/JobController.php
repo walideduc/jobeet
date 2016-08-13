@@ -186,8 +186,9 @@ class JobController extends Controller
     {
         $form = $this->createDeleteForm($job);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+       /* dump($job);
+        dump($form->isValid());die();*/
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($job);
             $em->flush();
@@ -207,7 +208,7 @@ class JobController extends Controller
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('alyya_job_delete', array('token' => $job->getToken())))
-            ->setMethod('DELETE')
+            ->setMethod('POST')
             ->getForm()
         ;
     }
