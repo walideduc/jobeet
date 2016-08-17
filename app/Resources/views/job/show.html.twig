@@ -8,6 +8,20 @@
     {% if app.request.get('token') %}
         {{ include('job/admin.html.twig', {'token' : app.request.get('token')}) }}
     {% endif %}
+
+    {% if not app.request.get('token') and jobs_history is not empty %}
+        <div id="job_history">
+            <h2> Recent viewed jobs</h2>
+            <ul>
+                {% for job_history in jobs_history %}
+                <li><a href="{{ path('alyya_job_show' , { 'id' : job_history.id , 'company'  : job_history.companyslug, 'position' : job_history.positionslug , 'location' : job_history.locationslug} ) }}"> {{ job_history.position}} {{ job_history.company }}</a></li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% endif %}
+
+
    <div id="job">
        <h1>{{ job.company }}</h1>
        <h2>{{ job.company }}</h2>

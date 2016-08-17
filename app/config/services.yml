@@ -7,3 +7,13 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+      admin.category:
+            class: Alyya\JobeetBundle\Admin\CategoryAdmin
+            arguments: [~, Alyya\JobeetBundle\Entity\Category, AlyyaJobeetBundle:CategoryAdmin]
+            tags:
+                - { name: sonata.admin, manager_type: orm, group: Jobeet, label: Categories }
+      admin.job:
+            class: Alyya\JobeetBundle\Admin\JobAdmin
+            arguments: [~, Alyya\JobeetBundle\Entity\Job, AlyyaJobeetBundle:JobAdmin]
+            tags:
+            - { name: sonata.admin, manager_type: orm, group: Jobeet, label: Jobs }

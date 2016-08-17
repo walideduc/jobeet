@@ -60,18 +60,48 @@ class JobController extends Controller
      * Finds and displays a Job entity.
      *
      */
-    public function showAction(Job $job)
+    public function showAction(Job $job ,Request $request)
     {
-        //return $this->getDoctrine()->getEntityManager()->getRepository('AlyyaJobeetBundle:Job')->getActiveJob($job->getId());
-        //dump($job);dump($job->isExpired());die();
         if($job->isExpired()){
             throw $this->createNotFoundException('This job is expired and does not exist any more');
         }
-        $deleteForm = $this->createDeleteForm($job);
 
+        $em = $this->getDoctrine()->getEntityManager();
+        //$request->getSession()->remove('job_history_ids');
+        $jobs_history_ids = $request->getSession()->get('job_history_ids',array());
+
+        $jobs_history = array();
+        dump($jobs_history_ids);
+
+        if(!empty($jobs_history_ids)){
+            foreach ($jobs_history_ids as $job_id){
+                if($job_id != $job->getId()){
+                    $job_history = $em->getRepository("AlyyaJobeetBundle:Job")->find($job_id);
+                    array_push($jobs_history,$job_history);
+                }
+
+            }
+        }
+
+        if(!in_array($job->getId() ,$jobs_history_ids )){
+
+            $size = array_push($jobs_history_ids,$job->getId());
+            if($size >= 4){
+                array_shift($jobs_history_ids) ;
+            }
+        }
+
+
+        $request->getSession()->set('job_history_ids',$jobs_history_ids);
+        
+
+        $deleteForm = $this->createDeleteForm($job);
+        dump($jobs_history);
+        dump($jobs_history_ids);//die();*/
         return $this->render('job/show.html.twig', array(
             'job' => $job,
             'delete_form' => $deleteForm->createView(),
+            'jobs_history' => $jobs_history,
         ));
     }
 

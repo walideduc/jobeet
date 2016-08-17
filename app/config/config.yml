@@ -12,7 +12,7 @@ parameters:
 
 framework:
     #esi:             ~
-    #translator:      { fallbacks: ["%locale%"] }
+    translator:      { fallbacks: ["%locale%"] }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -73,3 +73,15 @@ swiftmailer:
     #            uri_prefix:         /images/jobs
      #           upload_destination: %kernel.root_dir%/../web/images/jobs
       #          namer:              vich_uploader.namer_uniqid
+
+sonata_admin:
+  title: Jobeet Admin
+sonata_block:
+      default_contexts: [cms]
+      blocks:
+          #enable the SonataAdminBundle block
+          sonata.admin.block.admin_list:
+            contexts: [admin]
+          sonata.block.service.text:
+          sonata.block.service.action:
+          sonata.block.service.rss:
