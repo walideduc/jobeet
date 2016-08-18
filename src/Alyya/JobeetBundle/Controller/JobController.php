@@ -71,7 +71,7 @@ class JobController extends Controller
         $jobs_history_ids = $request->getSession()->get('job_history_ids',array());
 
         $jobs_history = array();
-        dump($jobs_history_ids);
+        //dump($jobs_history_ids);
 
         if(!empty($jobs_history_ids)){
             foreach ($jobs_history_ids as $job_id){
@@ -96,8 +96,8 @@ class JobController extends Controller
         
 
         $deleteForm = $this->createDeleteForm($job);
-        dump($jobs_history);
-        dump($jobs_history_ids);//die();*/
+        //dump($jobs_history);
+        //dump($jobs_history_ids);//die();*/
         return $this->render('job/show.html.twig', array(
             'job' => $job,
             'delete_form' => $deleteForm->createView(),
