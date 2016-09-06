@@ -11,3 +11,11 @@ alyya_category_show :
     defaults: { _controller: AlyyaJobeetBundle:Category:show , page: 1 }
     requirements:
       page: \d+
+
+
+alyya_category_api :
+    path:     /api/{token}/jobs.{_format}
+    defaults: { _controller: AlyyaJobeetBundle:Api:list }
+    requirements:
+      _format: json|xml|yaml
+

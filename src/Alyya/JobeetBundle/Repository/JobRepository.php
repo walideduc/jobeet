@@ -12,12 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class JobRepository extends EntityRepository
 {
-    public function getActiveJobs($category_id = null,$max = null){
-        $query = $this->getActiveJobsQuery($category_id,$max);
+    public function getActiveJobs($category_id = null,$max = null,$affiliate_id = null){
+        $query = $this->getActiveJobsQuery($category_id, $max, $affiliate_id);
         return $query->getResult();
     }
 
-    public function getActiveJobsQuery($category_id = null,$max = null){
+    public function getActiveJobsQuery($category_id = null,$max = null , $affiliate_id = null){
         $queryBuilder = $this->createQueryBuilder('j')
             ->where('j.expires_at >:date')
             ->andWhere('j.is_activated = :is_activated')
@@ -28,9 +28,17 @@ class JobRepository extends EntityRepository
             $queryBuilder->andWhere('j.category = :category_id');
             $queryBuilder->setParameter('category_id',$category_id);
         }
+
+        if ($affiliate_id){
+            $queryBuilder->leftJoin('j.category', 'c')
+                        ->leftJoin('c.affiliates', 'a')
+                        ->andWhere('a.id = :affiliate_id')
+                        ->setParameter('affiliate_id', $affiliate_id);
+        }
         if($max){
             $queryBuilder->setMaxResults($max);
         }
+
          return $queryBuilder->getQuery();
     }
 
@@ -76,4 +84,6 @@ class JobRepository extends EntityRepository
         return $query->execute();
 
     }
+    
+
 }
